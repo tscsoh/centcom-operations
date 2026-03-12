@@ -1,0 +1,461 @@
+export interface IraqLocation {
+  name: string
+  lat: number
+  lng: number
+  region: string
+  province: string
+  significance: string
+}
+
+// Key Iraq War (Operation Iraqi Freedom 2003–2011) locations
+export const IRAQ_LOCATIONS: IraqLocation[] = [
+  {
+    name: 'Baghdad',
+    lat: 33.3152,
+    lng: 44.3661,
+    region: 'Baghdad',
+    province: 'Baghdad',
+    significance: 'Capital; Green Zone; heaviest urban combat',
+  },
+  {
+    name: 'Fallujah',
+    lat: 33.3500,
+    lng: 43.7833,
+    region: 'Anbar Province',
+    province: 'Al Anbar',
+    significance: 'Two major battles Apr/Nov 2004; insurgent stronghold',
+  },
+  {
+    name: 'Mosul',
+    lat: 36.3566,
+    lng: 43.1583,
+    region: 'Northern Iraq',
+    province: 'Nineveh',
+    significance: 'Northern front; 101st Airborne AO; Uday/Qusay Hussein killed',
+  },
+  {
+    name: 'Basra',
+    lat: 30.5085,
+    lng: 47.7804,
+    region: 'Southern Iraq',
+    province: 'Basra',
+    significance: 'British sector; oil infrastructure; Shia south',
+  },
+  {
+    name: 'Tikrit',
+    lat: 34.6000,
+    lng: 43.6833,
+    region: 'Sunni Triangle',
+    province: 'Saladin',
+    significance: 'Saddam Hussein hometown; captured Dec 2003',
+  },
+  {
+    name: 'Ramadi',
+    lat: 33.4513,
+    lng: 43.3007,
+    region: 'Anbar Province',
+    province: 'Al Anbar',
+    significance: 'Anbar capital; major insurgent/AQI operations 2004–2007',
+  },
+  {
+    name: 'Kirkuk',
+    lat: 35.4669,
+    lng: 44.3922,
+    region: 'Northern Iraq',
+    province: 'Kirkuk',
+    significance: 'Disputed oil city; Kurdish/Arab tensions',
+  },
+  {
+    name: 'Najaf',
+    lat: 31.9955,
+    lng: 44.3358,
+    region: 'Southern Iraq',
+    province: 'Najaf',
+    significance: 'Shia holy city; Mahdi Army uprising Aug 2004',
+  },
+  {
+    name: 'Karbala',
+    lat: 32.6166,
+    lng: 44.0249,
+    region: 'Central Iraq',
+    province: 'Karbala',
+    significance: 'Shia holy city; Polish sector; 2003 advance route',
+  },
+  {
+    name: 'Samarra',
+    lat: 34.2000,
+    lng: 43.8700,
+    region: 'Sunni Triangle',
+    province: 'Saladin',
+    significance: 'Golden Mosque bombing Feb 2006 sparked civil war',
+  },
+  {
+    name: 'Baqubah',
+    lat: 33.7483,
+    lng: 44.6500,
+    region: 'Diyala Province',
+    province: 'Diyala',
+    significance: 'AQI stronghold; Operation Arrowhead Ripper 2007',
+  },
+  {
+    name: 'Haditha',
+    lat: 34.1264,
+    lng: 42.3829,
+    region: 'Anbar Province',
+    province: 'Al Anbar',
+    significance: 'Haditha dam; IED incident Nov 2005',
+  },
+  {
+    name: 'Tal Afar',
+    lat: 36.3728,
+    lng: 42.4472,
+    region: 'Northwestern Iraq',
+    province: 'Nineveh',
+    significance: 'Operation Restoring Rights 2005; model counterinsurgency',
+  },
+  {
+    name: 'Amarah',
+    lat: 31.8451,
+    lng: 47.1500,
+    region: 'Southern Iraq',
+    province: 'Maysan',
+    significance: 'British sector; Mahdi Army stronghold',
+  },
+  {
+    name: 'Nasiriyah',
+    lat: 31.0408,
+    lng: 46.2541,
+    region: 'Southern Iraq',
+    province: 'Dhi Qar',
+    significance: 'First major battle Mar 2003; Marines vs. Fedayeen',
+  },
+  {
+    name: 'Hillah',
+    lat: 32.4772,
+    lng: 44.4305,
+    region: 'Central Iraq',
+    province: 'Babylon',
+    significance: 'Near Babylon ruins; Multinational Division HQ',
+  },
+  {
+    name: 'Ar Rutbah',
+    lat: 33.0378,
+    lng: 40.2817,
+    region: 'Western Iraq',
+    province: 'Al Anbar',
+    significance: 'Western desert; MSR security; Syrian border route',
+  },
+  {
+    name: 'Abu Ghraib',
+    lat: 33.2833,
+    lng: 44.0833,
+    region: 'Baghdad Outskirts',
+    province: 'Baghdad',
+    significance: 'Detention facility; major IED corridor west Baghdad',
+  },
+]
+
+// Additional Middle East regional locations relevant to OIF/broader CENTCOM AOR
+export const REGIONAL_LOCATIONS: IraqLocation[] = [
+  // Syria
+  {
+    name: 'Damascus',
+    lat: 33.5138,
+    lng: 36.2765,
+    region: 'Syria',
+    province: 'Rif Dimashq',
+    significance: 'Syrian capital; arms smuggling route into Iraq',
+  },
+  {
+    name: 'Abu Kamal',
+    lat: 34.4503,
+    lng: 40.9178,
+    region: 'Syria',
+    province: 'Deir ez-Zor',
+    significance: 'Syria-Iraq border crossing; foreign fighter pipeline',
+  },
+  {
+    name: 'Deir ez-Zor',
+    lat: 35.3359,
+    lng: 40.1408,
+    region: 'Syria',
+    province: 'Deir ez-Zor',
+    significance: 'Euphrates crossing; ISIS later stronghold',
+  },
+  // Jordan
+  {
+    name: 'Amman',
+    lat: 31.9539,
+    lng: 35.9106,
+    region: 'Jordan',
+    province: 'Amman',
+    significance: 'US logistics hub; Camp Muwaffaq Salti; Zarqawi origin',
+  },
+  {
+    name: 'Zarqa',
+    lat: 32.0728,
+    lng: 36.0878,
+    region: 'Jordan',
+    province: 'Zarqa',
+    significance: 'Birthplace of Abu Musab al-Zarqawi, AQI founder',
+  },
+  // Kuwait
+  {
+    name: 'Kuwait City',
+    lat: 29.3759,
+    lng: 47.9774,
+    region: 'Kuwait',
+    province: 'Al Asimah',
+    significance: 'Coalition staging area; Camp Arifjan; main logistics hub',
+  },
+  {
+    name: 'Camp Doha',
+    lat: 29.4260,
+    lng: 47.8960,
+    region: 'Kuwait',
+    province: 'Al Asimah',
+    significance: 'US Army pre-positioning facility; Kuwait',
+  },
+  // Saudi Arabia
+  {
+    name: 'Riyadh',
+    lat: 24.7136,
+    lng: 46.6753,
+    region: 'Saudi Arabia',
+    province: 'Riyadh',
+    significance: 'Compound bombings May 2003; AQ presence',
+  },
+  {
+    name: 'Prince Sultan AB',
+    lat: 24.0625,
+    lng: 47.5808,
+    region: 'Saudi Arabia',
+    province: 'Riyadh',
+    significance: 'USAF Combined Air Operations Center pre-2003',
+  },
+  // Iran
+  {
+    name: 'Tehran',
+    lat: 35.6892,
+    lng: 51.3890,
+    region: 'Iran',
+    province: 'Tehran',
+    significance: 'IRGC HQ; EFP supply networks into Iraq',
+  },
+  {
+    name: 'Ahvaz',
+    lat: 31.3200,
+    lng: 48.6690,
+    region: 'Iran',
+    province: 'Khuzestan',
+    significance: 'Quds Force staging; Iran-Iraq border smuggling',
+  },
+  {
+    name: 'Mehran',
+    lat: 33.1224,
+    lng: 46.1651,
+    region: 'Iran',
+    province: 'Ilam',
+    significance: 'Iran border crossing; EFP/IED components transit point',
+  },
+  // Turkey
+  {
+    name: 'Incirlik AB',
+    lat: 37.0021,
+    lng: 35.4253,
+    region: 'Turkey',
+    province: 'Adana',
+    significance: 'USAF operations; northern access denied 2003',
+  },
+  {
+    name: 'Diyarbakir',
+    lat: 37.9144,
+    lng: 40.2306,
+    region: 'Turkey',
+    province: 'Diyarbakır',
+    significance: 'PKK conflict zone; Turkey-Iraq border ops',
+  },
+  // Gulf / Persian Gulf / Red Sea
+  {
+    name: 'Strait of Hormuz',
+    lat: 26.5667,
+    lng: 56.2500,
+    region: 'Persian Gulf',
+    province: 'Hormuz Strait',
+    significance: 'Critical oil chokepoint; Iranian interdiction ops; ship attacks',
+  },
+  {
+    name: 'Dubai',
+    lat: 25.2048,
+    lng: 55.2708,
+    region: 'UAE',
+    province: 'Dubai',
+    significance: 'UAE logistics hub; US Naval Support Activity',
+  },
+  {
+    name: 'Abu Dhabi',
+    lat: 24.4539,
+    lng: 54.3773,
+    region: 'UAE',
+    province: 'Abu Dhabi',
+    significance: 'UAE capital; Al Dhafra Air Base (USAF)',
+  },
+  {
+    name: 'Muscat',
+    lat: 23.5880,
+    lng: 58.3829,
+    region: 'Oman',
+    province: 'Muscat',
+    significance: 'Oman capital; US access; Gulf of Oman coastline',
+  },
+  {
+    name: 'Doha',
+    lat: 25.2854,
+    lng: 51.5310,
+    region: 'Qatar',
+    province: 'Ad-Dawhah',
+    significance: 'Al Udeid Air Base; Combined Air Operations Center (CAOC)',
+  },
+  {
+    name: 'Manama',
+    lat: 26.2235,
+    lng: 50.5876,
+    region: 'Bahrain',
+    province: 'Capital',
+    significance: 'US Naval Forces Central Command (NAVCENT) HQ',
+  },
+  {
+    name: 'Sanaa',
+    lat: 15.3694,
+    lng: 44.1910,
+    region: 'Yemen',
+    province: "Sana'a",
+    significance: 'Yemen capital; Houthi control; Ansar Allah ops',
+  },
+  {
+    name: 'Hodeidah',
+    lat: 14.7978,
+    lng: 42.9547,
+    region: 'Yemen',
+    province: 'Hodeidah',
+    significance: 'Red Sea port; Houthi missile/drone launch sites',
+  },
+  {
+    name: 'Aden',
+    lat: 12.7797,
+    lng: 45.0367,
+    region: 'Yemen',
+    province: 'Aden',
+    significance: 'Port of Aden; Gulf of Aden shipping lane',
+  },
+  // Israel / Palestine / Gaza
+  {
+    name: 'Tel Aviv',
+    lat: 32.0853,
+    lng: 34.7818,
+    region: 'Israel',
+    province: 'Tel Aviv District',
+    significance: 'Israeli financial/military hub; Iron Dome battery site',
+  },
+  {
+    name: 'Gaza City',
+    lat: 31.5017,
+    lng: 34.4668,
+    region: 'Gaza Strip',
+    province: 'Gaza',
+    significance: 'Hamas HQ; northern Gaza urban combat zone',
+  },
+  {
+    name: 'Rafah',
+    lat: 31.2968,
+    lng: 34.2457,
+    region: 'Gaza Strip',
+    province: 'Rafah',
+    significance: 'Southern Gaza; Rafah crossing; IDF ground operations',
+  },
+  {
+    name: 'Khan Yunis',
+    lat: 31.3469,
+    lng: 34.3060,
+    region: 'Gaza Strip',
+    province: 'Khan Yunis',
+    significance: 'Central Gaza; major combat zone',
+  },
+  {
+    name: 'Jerusalem',
+    lat: 31.7683,
+    lng: 35.2137,
+    region: 'Israel',
+    province: 'Jerusalem District',
+    significance: 'Capital contested; frequent West Bank tension flashpoint',
+  },
+  {
+    name: 'West Bank',
+    lat: 31.9522,
+    lng: 35.2332,
+    region: 'Palestinian Territories',
+    province: 'West Bank',
+    significance: 'IDF operations; settler violence; PA security incidents',
+  },
+  // Lebanon
+  {
+    name: 'Beirut',
+    lat: 33.8938,
+    lng: 35.5018,
+    region: 'Lebanon',
+    province: 'Beirut',
+    significance: 'Lebanese capital; Hezbollah southern suburbs (Dahieh)',
+  },
+  {
+    name: 'South Lebanon',
+    lat: 33.2721,
+    lng: 35.2033,
+    region: 'Lebanon',
+    province: 'South',
+    significance: 'Hezbollah rocket/drone launch zone; IDF cross-border ops',
+  },
+  // Aleppo (Syria — major conflict city)
+  {
+    name: 'Aleppo',
+    lat: 36.2021,
+    lng: 37.1343,
+    region: 'Syria',
+    province: 'Aleppo',
+    significance: 'Major Syrian civil war battleground; rebel vs. regime',
+  },
+]
+
+// All locations combined
+export const ALL_LOCATIONS: IraqLocation[] = [...IRAQ_LOCATIONS, ...REGIONAL_LOCATIONS]
+
+// Iraq theater geographic bounds
+export const IRAQ_BOUNDS = {
+  minLat: 29,
+  maxLat: 38,
+  minLng: 38,
+  maxLng: 49,
+}
+
+// Broader CENTCOM/Middle East AOR bounds
+export const CENTCOM_BOUNDS = {
+  minLat: 23,
+  maxLat: 39,
+  minLng: 34,
+  maxLng: 54,
+}
+
+// Iraq provinces for filtering
+export const IRAQ_PROVINCES = [
+  'Baghdad',
+  'Al Anbar',
+  'Nineveh',
+  'Basra',
+  'Saladin',
+  'Kirkuk',
+  'Najaf',
+  'Karbala',
+  'Diyala',
+  'Maysan',
+  'Dhi Qar',
+  'Babylon',
+]

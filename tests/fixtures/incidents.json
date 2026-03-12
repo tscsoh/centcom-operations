@@ -1,0 +1,67 @@
+[
+  {
+    "id": "INC-1000",
+    "timestamp": "2004-11-10T08:30:00.000Z",
+    "location": { "name": "Fallujah", "lat": 33.35, "lng": 43.7833, "region": "Al Anbar" },
+    "attackType": "GROUND_ASSAULT",
+    "threatLevel": "CRITICAL",
+    "status": "ACTIVE",
+    "casualties": { "confirmed": 38, "estimated": 50, "civilian": 12 },
+    "description": "Infantry engagement in urban area; air support requested",
+    "source": "MNF-I Intel",
+    "verified": true,
+    "details": "Operation Phantom Fury — Second Battle of Fallujah. Coalition forces advancing block-by-block."
+  },
+  {
+    "id": "INC-1001",
+    "timestamp": "2004-04-05T14:00:00.000Z",
+    "location": { "name": "Baghdad", "lat": 33.3152, "lng": 44.3661, "region": "Baghdad" },
+    "attackType": "IED",
+    "threatLevel": "HIGH",
+    "status": "DEVELOPING",
+    "casualties": { "confirmed": 4, "estimated": 8, "civilian": 2 },
+    "description": "Roadside bomb struck HMMWV patrol, casualties reported",
+    "source": "OSINT Network",
+    "verified": true,
+    "details": "IED detonated on Route Irish (Baghdad International Airport road). QRF dispatched."
+  },
+  {
+    "id": "INC-1002",
+    "timestamp": "2006-02-22T06:55:00.000Z",
+    "location": { "name": "Samarra", "lat": 34.2, "lng": 43.87, "region": "Saladin" },
+    "attackType": "VBIED",
+    "threatLevel": "CRITICAL",
+    "status": "RESOLVED",
+    "casualties": { "confirmed": 0, "estimated": 0, "civilian": 0 },
+    "description": "Explosion destroyed golden dome of Al-Askari Mosque",
+    "source": "Reuters Baghdad Bureau",
+    "verified": true,
+    "details": "Bombing of Golden Mosque triggered massive sectarian violence across Iraq."
+  },
+  {
+    "id": "INC-1003",
+    "timestamp": "2004-08-15T10:00:00.000Z",
+    "location": { "name": "Najaf", "lat": 31.9955, "lng": 44.3358, "region": "Najaf" },
+    "attackType": "GROUND_ASSAULT",
+    "threatLevel": "HIGH",
+    "status": "DEVELOPING",
+    "casualties": { "confirmed": 18, "estimated": 25, "civilian": 5 },
+    "description": "Mahdi Army militia engagement near Imam Ali Shrine",
+    "source": "AP Baghdad Bureau",
+    "verified": true,
+    "details": "Muqtada al-Sadr's Mahdi Army engaged coalition forces near holy shrine."
+  },
+  {
+    "id": "INC-1004",
+    "timestamp": "2007-01-20T07:15:00.000Z",
+    "location": { "name": "Mosul", "lat": 36.3566, "lng": 43.1583, "region": "Nineveh" },
+    "attackType": "SUICIDE_BOMBING",
+    "threatLevel": "CRITICAL",
+    "status": "RESOLVED",
+    "casualties": { "confirmed": 25, "estimated": 35, "civilian": 18 },
+    "description": "Suicide bomber detonated vest at busy market",
+    "source": "Al Jazeera",
+    "verified": true,
+    "details": "Attack in central Mosul marketplace. AQI claimed responsibility."
+  }
+]
