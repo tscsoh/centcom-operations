@@ -1,6 +1,18 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useSyncExternalStore, useRef } from 'react'
+
+function useIsDesktop() {
+  return useSyncExternalStore(
+    cb => {
+      const mq = window.matchMedia('(min-width: 768px)')
+      mq.addEventListener('change', cb)
+      return () => mq.removeEventListener('change', cb)
+    },
+    () => window.matchMedia('(min-width: 768px)').matches,
+    () => false, // SSR snapshot — assume mobile until hydrated
+  )
+}
 import { Incident } from '@/lib/incident-types'
 
 import { TacticalMap } from '@/components/tactical-map'
@@ -35,8 +47,17 @@ export default function WarTracker() {
   const [threatFilters, setThreatFilters] = useState<Set<string>>(new Set())
   const [attackFilters, setAttackFilters] = useState<Set<string>>(new Set())
   const [isPlaying, setIsPlaying] = useState(false)
+  const [playSpeed, setPlaySpeed] = useState(1)
   const [mobileTab, setMobileTab] = useState<'map' | 'feed' | 'stats'>('map')
   const [flyToTarget, setFlyToTarget] = useState<{ lat: number; lng: number; zoom?: number } | null>(null)
+  const isDesktop = useIsDesktop()
+
+  // Tracks the playhead origin so seeking during playback rebases the interval
+  const playOriginRef = useRef<{ ts: number; wall: number }>({ ts: WAR_START, wall: 0 })
+  // Mirror of timeRange[1] accessible inside effects without stale closure
+  const timeRangeEndRef = useRef(Date.now())
+  // Mirror of playSpeed accessible inside the interval without stale closure
+  const playSpeedRef = useRef(1)
 
   // Initialize: load persisted incidents from DB
   useEffect(() => {
@@ -117,7 +138,19 @@ export default function WarTracker() {
     return () => clearInterval(interval)
   }, [fetchNewsIncidents, fetchSocialIncidents])
 
-  // Timeline playback
+  // Keep refs in sync
+  useEffect(() => { timeRangeEndRef.current = timeRange[1] }, [timeRange])
+  useEffect(() => { playSpeedRef.current = playSpeed }, [playSpeed])
+
+  // Called by timeline when user clicks/drags the playhead (including while playing)
+  const handleTimelineSeek = useCallback((ts: number) => {
+    if (isPlaying) {
+      // Rebase play origin so the interval continues from the new position
+      playOriginRef.current = { ts, wall: Date.now() }
+    }
+  }, [isPlaying])
+
+  // Timeline playback — starts from current playhead position
   useEffect(() => {
     if (!isPlaying || incidents.length === 0) return
     const timestamps = incidents.map(i =>
@@ -125,14 +158,14 @@ export default function WarTracker() {
     )
     const maxTs = Math.max(Math.max(...timestamps), Date.now())
     const totalSpan = maxTs - WAR_START
-    // Reset cursor to war start when play is pressed
-    setTimeRange([WAR_START, WAR_START])
-    const startWall = Date.now()
-    const PLAY_DURATION = 12000 // 12 seconds to play through full span
+    const BASE_RATE = totalSpan / 12000 // ms of timeline per ms of wall clock at 1× (12s full span)
+    // Start from wherever the playhead currently sits
+    playOriginRef.current = { ts: timeRangeEndRef.current, wall: Date.now() }
     const interval = setInterval(() => {
-      const progress = Math.min((Date.now() - startWall) / PLAY_DURATION, 1)
-      setTimeRange([WAR_START, WAR_START + progress * totalSpan])
-      if (progress >= 1) setIsPlaying(false)
+      const { ts: fromTs, wall: fromWall } = playOriginRef.current
+      const newEnd = Math.min(fromTs + (Date.now() - fromWall) * BASE_RATE * playSpeedRef.current, maxTs)
+      setTimeRange([WAR_START, newEnd])
+      if (newEnd >= maxTs) setIsPlaying(false)
     }, 50)
     return () => clearInterval(interval)
   }, [isPlaying, incidents])
@@ -141,17 +174,22 @@ export default function WarTracker() {
     setSelectedIncident(incident)
   }, [])
 
-  // Filter incidents by source, time range, threat level, and attack type
-  const filteredIncidents = incidents.filter((i) => {
-    if (feedSource === 'NEWS'   && !i.id.startsWith('NEWS-')) return false
-    if (feedSource === 'SOCIAL' && !i.id.startsWith('SOC-'))  return false
-    if (feedSource === 'INTEL'  && !i.id.startsWith('INC-'))  return false
-    const ts = i.timestamp instanceof Date ? i.timestamp.getTime() : new Date(i.timestamp).getTime()
-    if (ts < timeRange[0] || ts > timeRange[1]) return false
-    if (threatFilters.size > 0 && !threatFilters.has(i.threatLevel)) return false
-    if (attackFilters.size > 0 && !attackFilters.has(i.attackType)) return false
-    return true
-  })
+  // Filter incidents by source, time range, threat level, and attack type (deduplicate by ID)
+  const filteredIncidents = (() => {
+    const seen = new Set<string>()
+    return incidents.filter((i) => {
+      if (seen.has(i.id)) return false
+      seen.add(i.id)
+      if (feedSource === 'NEWS'   && !i.id.startsWith('NEWS-')) return false
+      if (feedSource === 'SOCIAL' && !i.id.startsWith('SOC-'))  return false
+      if (feedSource === 'INTEL'  && !i.id.startsWith('INC-'))  return false
+      const ts = i.timestamp instanceof Date ? i.timestamp.getTime() : new Date(i.timestamp).getTime()
+      if (ts < timeRange[0] || ts > timeRange[1]) return false
+      if (threatFilters.size > 0 && !threatFilters.has(i.threatLevel)) return false
+      if (attackFilters.size > 0 && !attackFilters.has(i.attackType)) return false
+      return true
+    })
+  })()
 
   const hasActiveFilters = feedSource !== 'ALL' || threatFilters.size > 0 || attackFilters.size > 0
 
@@ -246,6 +284,13 @@ export default function WarTracker() {
           onChange={setTimeRange}
           isPlaying={isPlaying}
           onPlayToggle={() => setIsPlaying(p => !p)}
+          onSeek={handleTimelineSeek}
+          playSpeed={playSpeed}
+          onSpeedChange={speed => {
+            setPlaySpeed(speed)
+            // Rebase play origin so speed change takes effect immediately
+            if (isPlaying) playOriginRef.current = { ts: timeRangeEndRef.current, wall: Date.now() }
+          }}
           warStart={WAR_START}
         />
 
@@ -262,14 +307,16 @@ export default function WarTracker() {
       <div className="flex-1 flex overflow-hidden min-h-0">
         {/* Left Panel - Stats — hidden on mobile, shown on md+ */}
         <div className="hidden md:flex w-64 lg:w-72 border-r border-border p-3 overflow-auto flex-col shrink-0">
-          <StatsPanel
-            incidents={filteredIncidents}
-            threatFilters={threatFilters}
-            attackFilters={attackFilters}
-            onThreatClick={toggleThreat}
-            onAttackClick={toggleAttack}
-            onActivityClick={handleActivityClick}
-          />
+          {isDesktop && (
+            <StatsPanel
+              incidents={filteredIncidents}
+              threatFilters={threatFilters}
+              attackFilters={attackFilters}
+              onThreatClick={toggleThreat}
+              onAttackClick={toggleAttack}
+              onActivityClick={handleActivityClick}
+            />
+          )}
         </div>
 
         {/* Center - Map — hidden on mobile unless map tab active */}
@@ -288,6 +335,10 @@ export default function WarTracker() {
             <IncidentDetail
               incident={selectedIncident}
               onClose={() => setSelectedIncident(null)}
+              onZoomTo={incident => {
+                setFlyToTarget({ lat: incident.location.lat, lng: incident.location.lng, zoom: 10 })
+                setMobileTab('map')
+              }}
             />
           ) : (
             <IncidentFeed
@@ -304,14 +355,16 @@ export default function WarTracker() {
 
         {/* Stats panel for mobile — only shown when stats tab active */}
         <div className={`${mobileTab === 'stats' ? 'flex' : 'hidden'} md:hidden w-full border-l border-border p-3 overflow-auto flex-col shrink-0`}>
-          <StatsPanel
-            incidents={filteredIncidents}
-            threatFilters={threatFilters}
-            attackFilters={attackFilters}
-            onThreatClick={toggleThreat}
-            onAttackClick={toggleAttack}
-            onActivityClick={handleActivityClick}
-          />
+          {mobileTab === 'stats' && (
+            <StatsPanel
+              incidents={filteredIncidents}
+              threatFilters={threatFilters}
+              attackFilters={attackFilters}
+              onThreatClick={toggleThreat}
+              onAttackClick={toggleAttack}
+              onActivityClick={handleActivityClick}
+            />
+          )}
         </div>
       </div>
 

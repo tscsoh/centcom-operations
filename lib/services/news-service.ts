@@ -2,6 +2,17 @@ import { Incident, AttackType, ThreatLevel } from '../incident-types'
 import { geocodeText, jitterCoords } from './geocoder'
 import { ALL_LOCATIONS } from '../iraq-locations'
 
+function cleanText(html: string): string {
+  const decoded = html
+    .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, ' ')
+  return decoded
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/<[^>]*/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
 export interface NewsItem {
   id: string
   title: string
@@ -83,7 +94,7 @@ export function parseRSSFeed(xml: string, sourceName: string): NewsItem[] {
     items.push({
       id: `news-${sourceName}-${Date.now()}-${items.length}`,
       title,
-      summary: desc.substring(0, 300),
+      summary: cleanText(desc).substring(0, 300),
       source: sourceName,
       url: link,
       publishedAt,

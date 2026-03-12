@@ -51,6 +51,20 @@ interface IncidentFeedProps {
   onZoomTo?: (incident: Incident) => void
 }
 
+function extractSummary(details?: string | null): string | null {
+  if (!details) return null
+  // Take only the part before "\n\nSource:" footer
+  const body = details.split(/\n\n(?:Source:|URL:)/)[0]
+  // Strip any residual HTML tags and entities
+  const clean = body
+    .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')
+    .replace(/<[^>]*>/g, ' ').replace(/<[^>]*/g, ' ')
+    .replace(/https?:\/\/\S+/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+  return clean.length > 20 ? clean : null
+}
+
 function formatTimeAgo(date: Date): string {
   const now = new Date()
   const diffMs = now.getTime() - date.getTime()
@@ -205,10 +219,17 @@ export function IncidentFeed({ incidents, selectedIncident, onSelectIncident, on
                   </div>
                 </div>
 
-                {/* Description */}
-                <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
-                  {incident.description}
-                </p>
+                {/* RSS summary excerpt — only shown when it differs from the title */}
+                {(() => {
+                  const summary = extractSummary(incident.details)
+                  const title = incident.description?.trim() ?? ''
+                  if (!summary || summary.toLowerCase() === title.toLowerCase()) return null
+                  return (
+                    <p className="text-[11px] text-muted-foreground/70 mb-2 line-clamp-2 leading-snug">
+                      {summary}
+                    </p>
+                  )
+                })()}
 
                 {/* Footer */}
                 <div className="flex items-center justify-between">

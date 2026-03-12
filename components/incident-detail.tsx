@@ -13,18 +13,24 @@ import {
   ExternalLink,
   Copy,
   Share2,
+  Locate,
 } from 'lucide-react'
 
 interface IncidentDetailProps {
   incident: Incident
   onClose: () => void
+  onZoomTo?: (incident: Incident) => void
 }
 
 function stripHtml(html: string): string {
   const decoded = html
     .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')
     .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, ' ')
-  return decoded.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
+  return decoded
+    .replace(/<[^>]*>/g, ' ')  // strip closed tags: <foo bar>
+    .replace(/<[^>]*/g, ' ')   // strip unclosed tags: <foo bar...
+    .replace(/\s+/g, ' ')
+    .trim()
 }
 
 function extractUrls(text: string): string[] {
@@ -50,7 +56,7 @@ function UrlPreviewLink({ url }: { url: string }) {
   )
 }
 
-export function IncidentDetail({ incident, onClose }: IncidentDetailProps) {
+export function IncidentDetail({ incident, onClose, onZoomTo }: IncidentDetailProps) {
   const threatConfig = THREAT_LEVEL_CONFIG[incident.threatLevel]
   const attackConfig = ATTACK_TYPE_CONFIG[incident.attackType]
   const statusConfig = STATUS_CONFIG[incident.status]
@@ -125,12 +131,14 @@ export function IncidentDetail({ incident, onClose }: IncidentDetailProps) {
           </div>
         </div>
 
-        {/* Description */}
-        <div className="bg-secondary/30 rounded-lg p-3">
-          <p className="text-sm text-foreground leading-relaxed">
-            {incident.description}
-          </p>
-        </div>
+        {/* RSS summary — shown only when content exists and differs from title */}
+        {cleanDetails && cleanDetails.toLowerCase() !== incident.description?.toLowerCase()?.trim() && (
+          <div className="bg-secondary/30 rounded-lg p-3">
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {cleanDetails}
+            </p>
+          </div>
+        )}
 
         {/* Casualties */}
         <div className="grid grid-cols-3 gap-3">
@@ -182,15 +190,10 @@ export function IncidentDetail({ incident, onClose }: IncidentDetailProps) {
         </div>
 
         {/* Details */}
-        {(cleanDetails || sourceUrl) && (
+        {sourceUrl && (
           <div className="bg-secondary/30 rounded-lg p-3">
-            <div className="font-mono text-[10px] text-muted-foreground mb-2">INTEL REPORT</div>
-            {cleanDetails && (
-              <p className="font-mono text-xs text-muted-foreground leading-relaxed mb-2">
-                {cleanDetails}
-              </p>
-            )}
-            {sourceUrl && <UrlPreviewLink url={sourceUrl} />}
+            <div className="font-mono text-[10px] text-muted-foreground mb-2">SOURCE</div>
+            <UrlPreviewLink url={sourceUrl} />
           </div>
         )}
       </div>
@@ -207,6 +210,17 @@ export function IncidentDetail({ incident, onClose }: IncidentDetailProps) {
           <ExternalLink className="w-3 h-3 mr-1" />
           FULL REPORT
         </Button>
+        {onZoomTo && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="font-mono text-xs"
+            title="Zoom to location"
+            onClick={() => onZoomTo(incident)}
+          >
+            <Locate className="w-3 h-3" />
+          </Button>
+        )}
         <Button variant="outline" size="sm" className="font-mono text-xs">
           <Copy className="w-3 h-3" />
         </Button>
