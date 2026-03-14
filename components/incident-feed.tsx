@@ -148,7 +148,8 @@ export function IncidentFeed({ incidents, selectedIncident, onSelectIncident, on
         </div>
       </div>
 
-      <ScrollArea className="flex-1">
+      <div className="flex-1 min-h-0 overflow-hidden">
+      <ScrollArea className="h-full">
         <div className="p-2 space-y-2">
           {incidents.length === 0 && (
             <div className="flex flex-col items-center justify-center py-14 gap-3 text-center">
@@ -271,6 +272,7 @@ export function IncidentFeed({ incidents, selectedIncident, onSelectIncident, on
           })}
         </div>
       </ScrollArea>
+      </div>
     </div>
   )
 }
